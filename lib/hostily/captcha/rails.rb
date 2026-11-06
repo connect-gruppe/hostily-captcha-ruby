@@ -4,14 +4,21 @@ module Hostily
   module Captcha
     # View helper: <%= hostily_captcha_tag %> inside the <form>. Settings come from Hostily::Captcha.configuration.
     module ViewHelper
-      # Widget element (and, unless script: false, the widget script). Options: site_key, modus, sprache, api.
-      def hostily_captcha_tag(site_key: nil, modus: nil, sprache: nil, api: nil, script: true)
+      # Widget element (and, unless script: false, the widget script). Options: site_key, modus, haltezeit, sprache, api.
+      # modus: "sichtbar", "unsichtbar", "halten", "schieben"; "portal" (or false) leaves data-modus out, then the mode of the
+      # project in the customer portal applies. haltezeit (ms, 800-3000) is only used with "halten".
+      def hostily_captcha_tag(site_key: nil, modus: nil, haltezeit: nil, sprache: nil, api: nil, script: true)
         c = Hostily::Captcha.configuration
         key = site_key || c.site_key
         return hostily_captcha_html("") if key.to_s.empty? # not configured: nothing to show
 
         base = (api || c.endpoint).to_s.sub(%r{/+\z}, "")
-        attrs = { "data-site-key" => key, "data-api" => "#{base}/api/", "data-modus" => modus || c.modus }
+        attrs = { "data-site-key" => key, "data-api" => "#{base}/api/" }
+        m = modus.nil? ? c.modus : modus
+        m = m.to_s
+        attrs["data-modus"] = m unless m.empty? || m == "portal" || m == "false"
+        ht = haltezeit || c.haltezeit
+        attrs["data-haltezeit"] = ht.to_i.clamp(800, 3000) if ht && m == "halten"
         sp = sprache || c.sprache
         attrs["data-sprache"] = sp if sp
         html = +""

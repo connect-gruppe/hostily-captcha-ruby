@@ -44,6 +44,20 @@ class RailsHelpersTest < Minitest::Test
     assert_includes FakeView.new.hostily_captcha_tag(site_key: '"><x', modus: "unsichtbar"), 'data-site-key="&quot;&gt;&lt;x" data-api="https://c.example/api/" data-modus="unsichtbar"'
   end
 
+  def test_view_helper_modes
+    configure(site_key: "KEY", endpoint: "https://c.example/")
+    assert_includes FakeView.new.hostily_captcha_tag(modus: "schieben"), 'data-modus="schieben"></hostily-captcha>'
+    html = FakeView.new.hostily_captcha_tag(modus: "halten", haltezeit: 2200)
+    assert_includes html, 'data-modus="halten" data-haltezeit="2200"'
+    assert_includes FakeView.new.hostily_captcha_tag(modus: "halten", haltezeit: 50), 'data-haltezeit="800"'
+    refute_includes FakeView.new.hostily_captcha_tag(modus: "sichtbar", haltezeit: 2200), "data-haltezeit"
+    portal = FakeView.new.hostily_captcha_tag(modus: "portal")
+    refute_includes portal, "data-modus"
+    assert_includes portal, 'data-api="https://c.example/api/"></hostily-captcha>'
+    configure(modus: "halten", haltezeit: 1800)
+    assert_includes FakeView.new.hostily_captcha_tag, 'data-modus="halten" data-haltezeit="1800"'
+  end
+
   def test_view_helper_without_key_shows_nothing
     assert_equal "", FakeView.new.hostily_captcha_tag
   end

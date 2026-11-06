@@ -15,7 +15,7 @@ class ClientTest < Minitest::Test
       assert_equal "POST /api/v1/pruefen HTTP/1.1\r\n", s.last[:line]
       assert_equal({ "secret" => "s3cret", "response" => "tok", "remoteip" => "1.2.3.4", "formular" => { "name" => "Ann" } }, s.last[:body])
       assert_equal "application/json", s.last[:headers]["content-type"]
-      assert_equal "hostily-captcha-ruby/0.1.0", s.last[:headers]["user-agent"]
+      assert_equal "hostily-captcha-ruby/0.2.0", s.last[:headers]["user-agent"]
     end
   end
 

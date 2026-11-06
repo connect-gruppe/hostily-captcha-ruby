@@ -29,7 +29,7 @@ Hostily::Captcha.configure do |c|
   c.site_key = "…"                              # öffentlich
   c.secret   = ENV["HOSTILY_CAPTCHA_SECRET"]    # nur auf dem Server
   # c.endpoint = "https://captcha.hostily.de"   # Vorgabe
-  # c.modus = "sichtbar" | "unsichtbar"; c.sprache = "de" | "en" (Vorgabe: Seitensprache)
+  # c.modus = "sichtbar" | "unsichtbar" | "halten" | "schieben" | "portal"; c.haltezeit = 1500 (ms, nur halten); c.sprache = "de" | "en" (Vorgabe: Seitensprache)
   # c.fail_open = true                          # Dienst down: durchlassen (Vorgabe); false = blockieren
 end
 ```
@@ -37,7 +37,7 @@ end
 ```erb
 <%= form_with url: contact_path do |f| %>
   …
-  <%= hostily_captcha_tag %>     <%# Widget + Skript; Optionen: site_key:, modus:, sprache:, api:, script: false %>
+  <%= hostily_captcha_tag %>     <%# Widget + Skript; Optionen: site_key:, modus:, haltezeit:, sprache:, api:, script: false %>
 <% end %>
 ```
 
